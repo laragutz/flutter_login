@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login/vulnerabilidad/cve_lookup_page.dart';
 
 class HomePage extends StatelessWidget {
   final String username;
@@ -17,6 +18,15 @@ class HomePage extends StatelessWidget {
               // o reemplaza con la navegación a tu LoginPage)
               //Navigator.pushReplacementNamed(context, '/login_page');
               Navigator.pop(context);
+            },
+          ),
+                    IconButton(
+            icon: const Icon(Icons.security),
+            onPressed: () {
+              // Regresa a la pantalla de login (asegúrate de registrar la ruta '/login'
+              // o reemplaza con la navegación a tu LoginPage)
+              //Navigator.pushReplacementNamed(context, '/login_page');
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CveLookupPage()));
             },
           )
         ],

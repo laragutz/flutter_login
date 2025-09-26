@@ -149,7 +149,7 @@ class _CveLookupPageState extends State<CveLookupPage> {
                                 ...cve.products.map((p) => Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 2),
-                                      child: Text('• $p'),
+                                      child: Text('Dispositivo: $p'),
                                     )),
                             ],
                           ),
