@@ -15,6 +15,19 @@ class AuthService {
       return null;
     }
   }
+  
+  Future<User?> signUp(String email, String password) async {
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return credential.user;
+    } catch (e) {
+      print('Error during sign up: $e');
+      return null;
+    }
+  }
   Future<User> signOut() async {
     await _auth.signOut();
     throw UnimplementedError();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/auth_service.dart';
 import 'package:flutter_login/home_page.dart';
+import 'package:flutter_login/home_admin_page.dart';
+import 'package:flutter_login/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,14 +25,37 @@ class _LoginPageState extends State<LoginPage> {
 
       _authService
           .signIn(_emailController.text, _passwordController.text)
-          .then((user) {
+          .then((user) async {
         setState(() {
           _isLoading = false;
         });
         if (user != null) {
-          // Navegar a la página principal o dashboard
-          //Navigator.pushReplacementNamed(context, '/home');
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(username: user.email ?? 'Usuario')));
+          // Forzar refresh del token para obtener custom claims actualizadas
+          final idTokenResult = await user.getIdTokenResult(true);
+          final claims = idTokenResult.claims ?? {};
+          // (Logs de depuración removidos)
+
+          // Aceptar admin como bool true o string 'true'
+          final dynamic adminClaim = claims['admin'];
+          final bool isAdmin = (adminClaim == true) || (adminClaim is String && adminClaim.toLowerCase() == 'true');
+
+          if (!mounted) return;
+
+          // (SnackBar de rol removido)
+
+          if (isAdmin) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => HomeAdminPage(username: user.email ?? 'Administrador'),
+              ),
+            );
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => HomePage(username: user.email ?? 'Usuario'),
+              ),
+            );
+          }
               //      ScaffoldMessenger.of(context).showSnackBar(
             //const SnackBar(content: Text('Autenticación exitosa')),);
         } else {
@@ -87,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'Académico',
+                          'Quiz Ciberseguridad',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -245,8 +270,11 @@ class _LoginPageState extends State<LoginPage> {
                           // Botón secundario (opcional)
                           OutlinedButton(
                             onPressed: () {
-                              // Acción para registrarse o crear cuenta
-                              print('Navegar a registro');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => RegisterPage(),
+                                ),
+                              );
                             },
                             style: OutlinedButton.styleFrom(
                               foregroundColor: const Color(0xFF8B1538),
